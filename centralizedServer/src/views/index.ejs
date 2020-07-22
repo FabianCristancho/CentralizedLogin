@@ -28,14 +28,24 @@
                <div class="col-md-6">
                     <div class="card">
                          <div class="card-header">
-                              <h4 class="text-info text-center">SERVIDOR 2</h4>
-                              <p class="text-center">192.168.100.161</p>
+                              <h4 class="text-info text-center">Calculo</h4>
+                              <p class="text-center">Sumas</p>
                          </div>
                          <div class="card-body text-center">
-                              <img src="https://static.vecteezy.com/system/resources/previews/000/337/165/non_2x/vector-server-icon.jpg" alt="server 2" class="img-fluid" width="200">
+                              <form>
+                                   <div class="form-row">
+                                     <div class="col">
+                                       <input type="text" class="form-control"{{suma1}}>
+                                     </div>
+                                     <h2>+</h2>
+                                     <div class="col">
+                                       <input type="text" class="form-control"{{suma2}}>
+                                     </div>
+                                   </div>
+                                 </form>
                          </div>
                          <div class="card-footer">
-                              <form action="/2" method="POST">
+                              <form action="/suma" method="POST">
                                    <button class="btn btn-primary btn-block" type="submit">HACER PETICIÓN</button>
                               </form>
                          </div>

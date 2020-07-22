@@ -4,6 +4,7 @@ const axios = require('axios');
 const Log = require('../db/logs');
 
 var start = new Date();
+let main = true;
 
 router.get('/', async (req, res) => {
      const listLogs = await Log.find();
@@ -15,7 +16,18 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/sendReq', (req,res) => {
-     axios.get('http://localhost:3001/receiveReq').catch(error => {
+     let portService = 0;
+     console.log(portService);
+     console.log(main);
+     if(main){
+          portService = 3001;
+     }else{
+          portService = 3002;
+     }
+     main = !main;
+     console.log(main);
+     console.log('http://localhost:'+portService+'/receiveReq');
+     axios.get('http://localhost:'+portService+'/receiveReq').catch(error => {
           console.log("servidor conectado");
      });
      res.redirect('/');
