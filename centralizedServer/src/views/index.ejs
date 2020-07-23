@@ -9,49 +9,34 @@
      <div class="container">
           <h1 class="text-center text-primary mt-3">PRUEBA DE CARGA</h1>
           <div class="row mt-4">
+               <div class="col-md-3"><h1></h1></div>
                <div class="col-md-6">
                     <div class="card">
                          <div class="card-header">
-                              <h4 class="text-info text-center">SERVIDOR 1</h4>
-                              <p class="text-center">192.168.100.136</p>
+                              <h4 class="text-info text-center">PALÍNDROMA</h4>
+                              <p class="text-center">Evaluación cadenas palíndromas</p>
                          </div>
                          <div class="card-body text-center">
-                              <img src="https://static.vecteezy.com/system/resources/previews/000/337/165/non_2x/vector-server-icon.jpg" alt="server 2" class="img-fluid" width="200">
-                         </div>
-                         <div class="card-footer">
                               <form action="/sendReq" method="POST">
-                                   <button class="btn btn-primary btn-block" type="submit">HACER PETICIÓN</button>
-                              </form>
-                         </div>
-                    </div>
-               </div>
-               <div class="col-md-6">
-                    <div class="card">
-                         <div class="card-header">
-                              <h4 class="text-info text-center">Calculo</h4>
-                              <p class="text-center">Sumas</p>
-                         </div>
-                         <div class="card-body text-center">
-                              <form>
                                    <div class="form-row">
                                      <div class="col">
-                                       <input type="text" class="form-control"{{suma1}}>
+                                       <input type="text" placeholder="Ingresa la palabra o frase" name="word" class="form-control"{{suma1}}>
                                      </div>
-                                     <h2>+</h2>
-                                     <div class="col">
-                                       <input type="text" class="form-control"{{suma2}}>
-                                     </div>
+                                     
+                                     <button class="btn btn-primary btn-block mt-3" type="submit">DETERMINAR SI ES PALÍNDROMA</button>
                                    </div>
-                                 </form>
-                         </div>
-                         <div class="card-footer">
-                              <form action="/suma" method="POST">
-                                   <button class="btn btn-primary btn-block" type="submit">HACER PETICIÓN</button>
                               </form>
+                         </div>
+                         <div class="card-footer text-center">
+                              <% if(statusClient != 0){ %> 
+                                   <h5><%= resultPalindrome %> </h5>
+                                 <% } %>
                          </div>
                     </div>
                </div>
           </div>
+          <br>
+          <br>
           <br>
           <table class="table table-bordered table-hover">
                <div class="card-header">

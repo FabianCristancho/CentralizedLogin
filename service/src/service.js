@@ -3,36 +3,43 @@ const axios = require('axios');
 const ip = require('ip');
 
 const app = express();
-let port = 3001;
-prt();
-function prt(){
-     axios.get('http://localhost:3001/',{
-     }).then(res =>{
-          port = 3002;
-     }).catch(error => {
-     });
+const port = process.argv[2]
 
-}
 app.get('/', (req, res) => {
-     res.send('Server');
+     res.send("");
 })
 
 app.get('/receiveReq', (req, res) => {
      console.log("Recibida la solicitud del middleware");
-     axios.get('http://localhost:3000/log',{
-          params: {
-               date: new Date(),
-               server:ip.address(),
-               timeResponse: 100,
-               status: true,
-          }
-     }).then(res =>{
-          // res.connection.destroy();
-     }).catch(error => {
-          console.log('middleware desconectado')
-          // console.log(error);
-     });
+     console.log(isPalindrome(req.query.word));
+     res.send(isPalindrome(req.query.word));
+     // axios.get('http://localhost:3000/log',{
+     //      params: {
+     //           date: new Date(),
+     //           server:ip.address(),
+     //           timeResponse: 100,
+     //           status: true,
+     //      }
+     // }).then(res =>{
+     //      // res.connection.destroy();
+     // }).catch(error => {
+     //      console.log('middleware desconectado')
+     //      // console.log(error);
+     // });
 });
 
-setTimeout(() => {  app.listen(port, () => console.log(`Example app listening on port ${port}`)); }, 2000);
-//setTimeout(app.listen(port, () => console.log(`Example app listening on port ${port}`)), 1000);
+function isPalindrome(word){
+     var evaluateWord = word.replace(/ /g, "").toLowerCase();
+     var i = 0;
+     var j = evaluateWord.length - 1;
+     while(i <= j){
+          if(evaluateWord[i] !== evaluateWord[j]){
+               return "'" +word +"'" +" no es palíndroma";
+          }
+          i++;
+          j--;
+     }
+     return "'" +word +"'" +" es palíndroma";
+}
+
+app.listen(port, () => console.log(`Server listening on port ${port}`));
