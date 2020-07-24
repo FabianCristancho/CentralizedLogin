@@ -28,9 +28,9 @@
                               </form>
                          </div>
                          <div class="card-footer text-center">
-                              <% if(statusClient != 0){ %> 
+                              
                                    <h5><%= resultPalindrome %> </h5>
-                                 <% } %>
+                              
                          </div>
                     </div>
                </div>
@@ -45,10 +45,11 @@
                <thead>
                     <tr>
                          <th>N°</th>
-                         <th>Fecha</th>
-                         <th>Servidor</th>
-                         <th>Tiempo de Respuesta</th>
-                         <th>Estado</th>
+                         <th>Date</th>
+                         <th>Host</th>
+                         <th>Time Response</th>
+                         <th>State</th>
+                         <th>Level</th>
                     </tr>
                </thead>
                <tbody>
@@ -58,7 +59,8 @@
                               <td><%= listLogs[i].date %> </td>
                               <td><%= listLogs[i].server %> </td>
                               <td><%= listLogs[i].timeResponse %> </td>
-                              <td><%= listLogs[i].status %> </td>
+                              <td><%= listLogs[i].code %> </td>
+                              <td><%= listLogs[i].level %> </td>
                          </tr>
                     <% } %> 
                </tbody>

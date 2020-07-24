@@ -6,27 +6,32 @@ const app = express();
 const port = process.argv[2]
 
 app.get('/', (req, res) => {
-     res.send("");
+     res.send("server");
 })
 
 app.get('/receiveReq', (req, res) => {
      console.log("Recibida la solicitud del middleware");
      console.log(isPalindrome(req.query.word));
      res.send(isPalindrome(req.query.word));
-     // axios.get('http://localhost:3000/log',{
-     //      params: {
-     //           date: new Date(),
-     //           server:ip.address(),
-     //           timeResponse: 100,
-     //           status: true,
-     //      }
-     // }).then(res =>{
-     //      // res.connection.destroy();
-     // }).catch(error => {
-     //      console.log('middleware desconectado')
-     //      // console.log(error);
-     // });
+     sendLog(res);
 });
+
+function sendLog(res){
+     axios.get('http://localhost:3000/log',{
+          params: {
+               date: new Date(),
+               server:ip.address(),
+               currentTime: process.hrtime(),
+               status: res.statusCode,
+               level: 'OK'
+          }
+     }).then(res =>{
+          // res.connection.destroy();
+     }).catch(error => {
+          console.log('middleware desconectado')
+          // console.log(error);
+     });
+}
 
 function isPalindrome(word){
      var evaluateWord = word.replace(/ /g, "").toLowerCase();

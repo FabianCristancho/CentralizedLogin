@@ -9,7 +9,7 @@ const app = express();
 const port = 3000;
 
 //Conecting DB
-mongoose.connect('mongodb://localhost/test_logs', {
+mongoose.connect('mongodb://localhost/logs', {
      useUnifiedTopology: true,
      useNewUrlParser: true,
      }).then(db => console.log('DB connected')).catch(err => console.log(err));

@@ -5,7 +5,8 @@ const LogSchema = new Schema({
      date: Date,
      server: String,
      timeResponse: Number,
-     status: Boolean
+     code: Number,
+     level: String
 });
 
-module.exports = mongoose.model('testLogs', LogSchema);
+module.exports = mongoose.model('logs', LogSchema);
