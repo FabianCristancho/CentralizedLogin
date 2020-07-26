@@ -20,7 +20,6 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/sendReq', (req,res) => {
-     
      console.log(portService);
      console.log(main);
      console.log(req.body.num1);
