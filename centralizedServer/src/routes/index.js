@@ -2,73 +2,80 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const Log = require('../db/logs');
+
+const host = process.argv[2];
+const port1 = process.argv[3];
+const port2 = process.argv[4];
 var resultPalindrome = "";
-var statusClient = 0;
-var startHrTime;
+var initTime = 0;
 let portService = 0;
 const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
 
-var start = new Date();
 let main = true;
 
+/**
+ * Ruta con página principal
+ */
 router.get('/', async (req, res) => {
-     const listLogs = await Log.find({level: 'Error'});
-     // console.log(listLogs);
+     const listLogs = await Log.find({level:{$in:['Error', 'Warning']}});
      res.render('index', {
-          listLogs, statusClient, resultPalindrome});
-     // res.render('index');
+          listLogs, resultPalindrome});
 });
 
+/**
+ * Encargado de solicitar respuesta por parte de un servidor elegido por el algoritmo de round robin
+ */
 router.post('/sendReq', (req,res) => {
-     console.log(portService);
-     console.log(main);
-     console.log(req.body.num1);
      if(main){
-          portService = 3001;
+          portService = port1;
      }else{
-          portService = 3002;
+          portService = port2;
      }
      main = !main;
-     console.log(main);
-     console.log('http://localhost:'+portService+'/receiveReq');
-     startHrTime = process.hrtime();
      sendRequest(req, res);
-
-     sleep(100).then(() => {
-          res.redirect('/');
-     });
 });
 
+/**
+ * Respuesta de logs por parte del servidor
+ */
 router.get('/log', async (req, res) => {
-     const elapsedHrTime = process.hrtime(req.query.currentTime);
-     const elapsedTimeInMs = elapsedHrTime[0] * 1000 + elapsedHrTime[1] / 1e6;
+     let finalTime = new Date();
+     let responseTime = (finalTime.getMilliseconds()+initTime.getMilliseconds())/2;
 
-     let responseStatus = {date: req.query.date, server: req.query.server, timeResponse: elapsedTimeInMs, code: res.statusCode, level: req.query.level};
-
+     let responseStatus ={};
+     if(responseTime<5000){
+          responseStatus = {date: req.query.date, server: host, timeResponse: responseTime, code: res.statusCode, level: req.query.level};
+     }else{
+          responseStatus = {date: req.query.date, server: host, timeResponse: responseTime, code: 504, level: "Warning"};
+     }
      console.log(responseStatus);
 
-     // const log = new Log(req.query);
      const log = new Log(responseStatus);
-     
      await log.save();
-     // console.log(JSON.stringify(req.headers));
 });
 
+/**
+ * Envía solicitud a server
+ * @param {Solicitud} req 
+ * @param {Respuesta} res 
+ */
 function sendRequest(req, res){
-     axios.get('http://localhost:'+portService+'/receiveReq', {params: {word: req.body.word}}).then(res => {
-          console.log("A continuacion la respuesta");
-          statusClient = 1;
+     initTime = new Date();
+     axios.get('http://'+host+':'+portService+'/receiveReq', {params: {word: req.body.word}}).then(res => {
+          console.log("Respuesta:");
           resultPalindrome = res.data;
           console.log(res.data);
      }).catch(async error => {
-          console.log(error);
-          console.log("HA ENTRADO EN EL CATCH");
-          let responseStatus = {date: new Date(), server: '192.168.56.1', timeResponse: -1, code: 404, level: 'Error'};
+          let responseStatus = {date: new Date(), server: host +':' +portService, timeResponse: 0, code: 404, level: 'Error'};
+          console.log(responseStatus);
           let log = new Log(responseStatus);
           await log.save();
-          resultPalindrome = "";
+          resultPalindrome = "x_x servidor no disponible en este momento x_x";
+     }).finally(() => {
+          sleep(100).then(() => {
+               res.redirect('/');
+          });
      });
-     
 }
 
 module.exports = router;

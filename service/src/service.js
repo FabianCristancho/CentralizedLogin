@@ -20,7 +20,7 @@ function sendLog(res){
      axios.get('http://localhost:3000/log',{
           params: {
                date: new Date(),
-               server:ip.address(),
+               server:ip.address() +":" +port,
                currentTime: process.hrtime(),
                status: res.statusCode,
                level: 'OK'
