@@ -3,7 +3,8 @@ const axios = require('axios');
 const ip = require('ip');
 
 const app = express();
-const port = process.argv[2]
+const hostMiddleware = process.argv[2]
+const port = process.argv[3]
 
 app.get('/', (req, res) => {
      res.send("server");
@@ -17,7 +18,7 @@ app.get('/receiveReq', (req, res) => {
 });
 
 function sendLog(res){
-     axios.get('http://localhost:3000/log',{
+     axios.get('http://'+hostMiddleware+':3000/log',{
           params: {
                date: new Date(),
                server:ip.address() +":" +port,
