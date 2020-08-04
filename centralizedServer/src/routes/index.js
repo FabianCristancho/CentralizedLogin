@@ -8,10 +8,13 @@ const port1 = process.argv[3];
 const port2 = process.argv[4];
 var resultPalindrome = "";
 var initTime = 0;
-let portService = 0;
+var portService = 0;
+
 const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
 
-let main = true;
+var serverFailed = 0;
+var isCatch = false;
+var main = true;
 
 /**
  * Ruta con página principal
@@ -26,14 +29,18 @@ router.get('/', async (req, res) => {
  * Encargado de solicitar respuesta por parte de un servidor elegido por el algoritmo de round robin
  */
 router.post('/sendReq', (req,res) => {
+     roundRobin();
+     sendRequest(req, res);
+});
+
+function roundRobin(){
      if(main){
           portService = port1;
      }else{
           portService = port2;
      }
      main = !main;
-     sendRequest(req, res);
-});
+}
 
 /**
  * Respuesta de logs por parte del servidor
@@ -65,12 +72,27 @@ function sendRequest(req, res){
           console.log("Respuesta:");
           resultPalindrome = res.data;
           console.log(res.data);
+          if(isCatch){
+               roundRobin();
+               isCatch = !isCatch;
+          }
+          serverFailed = 0;
+
      }).catch(async error => {
           let responseStatus = {date: new Date(), server: host +':' +portService, timeResponse: 0, code: 404, level: 'Error'};
           console.log(responseStatus);
           let log = new Log(responseStatus);
           await log.save();
-          resultPalindrome = "x_x servidor no disponible en este momento x_x";
+          
+          roundRobin();
+          isCatch = true;
+          serverFailed++;
+          
+          if(serverFailed < 2){
+               resultPalindrome = "x_x servidores no disponibles x_x";
+               sendRequest(req, res);
+          }
+
      }).finally(() => {
           sleep(100).then(() => {
                res.redirect('/');
